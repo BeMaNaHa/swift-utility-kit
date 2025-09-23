@@ -1,14 +1,17 @@
-import Macros
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
-import XCTest
+import Testing
+
+@testable import Macros
 
 let testMacros: [String: Macro.Type] = [
     "Inject": InjectMacro.self
 ]
 
-class InjectMacroTests: XCTestCase {
-    func testSimpleVariable() {
+@Suite("Inject macro tests")
+struct InjectMacroTests {
+    @Test("Simple variable expansion")
+    func simpleVariable() {
         assertMacroExpansion(
             """
             struct MyService {
@@ -28,7 +31,8 @@ class InjectMacroTests: XCTestCase {
         )
     }
 
-    func testVariableWithModifier() {
+    @Test("Variable with modifier")
+    func variableWithModifier() {
         assertMacroExpansion(
             """
             struct MyService {
@@ -48,7 +52,8 @@ class InjectMacroTests: XCTestCase {
         )
     }
 
-    func testWithKey() {
+    @Test("Macro with key argument")
+    func withKey() {
         assertMacroExpansion(
             """
             struct MyService {
@@ -68,7 +73,8 @@ class InjectMacroTests: XCTestCase {
         )
     }
 
-    func testWithContainer() {
+    @Test("Macro with container argument")
+    func withContainer() {
         assertMacroExpansion(
             """
             struct MyService {
@@ -88,7 +94,8 @@ class InjectMacroTests: XCTestCase {
         )
     }
 
-    func testWithAllPossibleArguments() {
+    @Test("Macro with all possible arguments")
+    func withAllPossibleArguments() {
         assertMacroExpansion(
             """
             struct MyService {
@@ -108,7 +115,8 @@ class InjectMacroTests: XCTestCase {
         )
     }
 
-    func testInvalidArgument() {
+    @Test("Invalid argument label error")
+    func invalidArgument() {
         assertMacroExpansion(
             """
             struct MyService {
@@ -131,7 +139,8 @@ class InjectMacroTests: XCTestCase {
         )
     }
 
-    func testWillUnlabeledArgument() {
+    @Test("Unlabeled argument error")
+    func unlabeledArgument() {
         assertMacroExpansion(
             """
             struct MyService {
