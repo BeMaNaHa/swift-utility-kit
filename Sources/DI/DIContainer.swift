@@ -7,19 +7,12 @@
 
 /// A simple Dependency Injection Container.
 public actor DIContainer {
-    /// Errors that can occur during registration or resolution.
-    public enum Errors: Error {
-        case duplicateRegistration(key: String)
-        case providerNotFound(key: String)
-        case typeMismatch(key: String, expected: String, actual: String)
-    }
-    
     /// Dictionary to hold providers by their keys.
     private var providers: [String: Provider] = [:]
-    
+
     /// Dictionary to hold container scoped instances by their keys.
     private var instances: [String: Sendable] = [:]
-    
+
     /// Shared singleton instance of `DIContainer`.
     public static let shared = DIContainer()
 
@@ -40,7 +33,7 @@ extension DIContainer {
         _ factory: @escaping Provider.Factory<T>
     ) throws -> Self {
         guard providers[key] == nil else {
-            throw Errors.duplicateRegistration(key: key)
+            throw Error.duplicateRegistration(key: key)
         }
 
         providers[key] = Provider(key: key, scope: scope, factory: factory)
@@ -57,7 +50,7 @@ extension DIContainer {
         key: String = String(describing: T.self)
     ) throws -> T {
         guard let provider = providers[key] else {
-            throw Errors.providerNotFound(key: key)
+            throw Error.providerNotFound(key: key)
         }
 
         var instance: Sendable?
@@ -74,7 +67,7 @@ extension DIContainer {
         }
 
         guard let typedInstance = instance as? T else {
-            throw Errors.typeMismatch(
+            throw Error.typeMismatch(
                 key: key,
                 expected: String(describing: T.self),
                 actual: String(describing: type(of: instance))
@@ -82,5 +75,25 @@ extension DIContainer {
         }
 
         return typedInstance
+    }
+}
+
+extension DIContainer {
+    /// Errors that can occur during registration or resolution.
+    public enum Error: Swift.Error, CustomStringConvertible {
+        case duplicateRegistration(key: String)
+        case providerNotFound(key: String)
+        case typeMismatch(key: String, expected: String, actual: String)
+
+        public var description: String {
+            switch self {
+            case .duplicateRegistration(let key):
+                return "A provider with the key '\(key)' is already registered."
+            case .providerNotFound(let key):
+                return "No provider found for the key '\(key)'."
+            case .typeMismatch(let key, let expected, let actual):
+                return "Type mismatch for key '\(key)': expected '\(expected)', got '\(actual)'."
+            }
+        }
     }
 }

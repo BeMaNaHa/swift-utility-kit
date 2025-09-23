@@ -47,7 +47,7 @@ class InjectMacroTests: XCTestCase {
             macros: testMacros
         )
     }
-    
+
     func testWithKey() {
         assertMacroExpansion(
             """
@@ -67,7 +67,7 @@ class InjectMacroTests: XCTestCase {
             macros: testMacros
         )
     }
-    
+
     func testWithContainer() {
         assertMacroExpansion(
             """
@@ -87,7 +87,7 @@ class InjectMacroTests: XCTestCase {
             macros: testMacros
         )
     }
-    
+
     func testWithAllPossibleArguments() {
         assertMacroExpansion(
             """
@@ -104,6 +104,52 @@ class InjectMacroTests: XCTestCase {
                     }
                 }
                 """,
+            macros: testMacros
+        )
+    }
+
+    func testInvalidArgument() {
+        assertMacroExpansion(
+            """
+            struct MyService {
+                @Inject(wrongLabel: "InMemoryMyRepository") var repository: MyRepository
+            }
+            """,
+            expandedSource: """
+                struct MyService {
+                    var repository: MyRepository
+                }
+                """,
+            diagnostics: [
+                DiagnosticSpec(
+                    message: "Unsupported argument label: wrongLabel",
+                    line: 2,
+                    column: 5
+                )
+            ],
+            macros: testMacros
+        )
+    }
+
+    func testWillUnlabeledArgument() {
+        assertMacroExpansion(
+            """
+            struct MyService {
+                @Inject("InMemoryMyRepository") var repository: MyRepository
+            }
+            """,
+            expandedSource: """
+                struct MyService {
+                    var repository: MyRepository
+                }
+                """,
+            diagnostics: [
+                DiagnosticSpec(
+                    message: "No label found for argument with value: \"InMemoryMyRepository\".",
+                    line: 2,
+                    column: 5
+                )
+            ],
             macros: testMacros
         )
     }
