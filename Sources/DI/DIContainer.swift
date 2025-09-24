@@ -15,8 +15,6 @@ public actor DIContainer {
 
     /// Shared singleton instance of `DIContainer`.
     public static let shared = DIContainer()
-
-    private init() {}
 }
 
 extension DIContainer {
@@ -70,7 +68,7 @@ extension DIContainer {
             throw Error.typeMismatch(
                 key: key,
                 expected: String(describing: T.self),
-                actual: String(describing: type(of: instance))
+                actual: String(describing: type(of: instance!))
             )
         }
 
@@ -80,7 +78,7 @@ extension DIContainer {
 
 extension DIContainer {
     /// Errors that can occur during registration or resolution.
-    public enum Error: Swift.Error, CustomStringConvertible {
+    public enum Error: Swift.Error, Equatable, CustomStringConvertible {
         case duplicateRegistration(key: String)
         case providerNotFound(key: String)
         case typeMismatch(key: String, expected: String, actual: String)

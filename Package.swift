@@ -20,9 +20,11 @@ let package = Package(
         )
     ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
+        // Dependency Injection framework
         .target(name: "DI", dependencies: [.target(name: "Macros")]),
+        .testTarget(name: "DITests", dependencies: ["DI"]),
+
+        // Custom macros implementation
         .macro(
             name: "Macros",
             dependencies: [

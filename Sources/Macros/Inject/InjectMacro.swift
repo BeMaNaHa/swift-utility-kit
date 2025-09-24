@@ -53,7 +53,7 @@ public struct InjectMacro: AccessorMacro {
 
 extension InjectMacro {
     /// Errors that can occur when working with `InjectMacro`.
-    public enum Error: Swift.Error, CustomStringConvertible {
+    public enum Error: Swift.Error, Equatable, CustomStringConvertible {
         case noLabelFoundForArgument(value: String)
 
         public var description: String {

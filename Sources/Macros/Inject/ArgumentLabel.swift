@@ -15,7 +15,7 @@ extension InjectMacro {
 
 extension InjectMacro.ArgumentLabel {
     /// Errors that can occur when working with `ArgumentLabel`.
-    public enum Error: Swift.Error, CustomStringConvertible {
+    public enum Error: Swift.Error, Equatable, CustomStringConvertible {
         case unsupportedArgumentLabel(String)
 
         public var description: String {
